@@ -15,7 +15,7 @@ case $STATUS in
 	# allow incoming through VPN
 	ufw allow in on $INTERFACE from any to any
 	# allow outgoing through anything to the VPN server (to make it possible to reconnect)
-	REMOTE=$(nmcli --fields active connection show $CONNECTION_UUID | awk '/remote/ { print $4 }')
+	REMOTE=$(nmcli --fields active connection show $CONNECTION_UUID | sed 's/:/\t/g' | awk '/remote =/ { print $4 }')
 	getent hosts $REMOTE | awk '{ print $1 }' | while read line ; do ufw allow out from any to $line; done
 	# start it
 	ufw enable
