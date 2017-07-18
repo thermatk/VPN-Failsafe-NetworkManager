@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Disable Failsafe Firewall
+Comment=Disable ufw, which acts as a failsafe for VPN
+Exec=sh -c "sudo ufw disable"
+Terminal=true
+Type=Application
+StartupNotify=true
+Icon=preferences-system-network
+Categories=Network;System;
