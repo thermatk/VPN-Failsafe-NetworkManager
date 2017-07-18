@@ -1,0 +1,29 @@
+#!/bin/sh
+
+INTERFACE=$1 # The interface which is brought up or down
+STATUS=$2 # The new state of the interface
+
+case $STATUS in
+  vpn-up)
+	# clean rules
+	ufw --force reset
+	# all traffic disabled by default
+	ufw default deny outgoing 
+	ufw default deny incoming
+	# allow outgoing through VPN
+	ufw allow out on $INTERFACE from any to any
+	# allow incoming through VPN
+	ufw allow in on $INTERFACE from any to any
+	# allow outgoing through anything to the VPN server (to make it possible to reconnect)
+	REMOTE=$(nmcli --fields active connection show $CONNECTION_UUID | awk '/remote/ { print $4 }')
+	getent hosts $REMOTE | awk '{ print $1 }' | while read line ; do ufw allow out from any to $line; done
+	# start it
+	ufw enable
+	echo $"VPN-FAILSAFE. Int: $INTERFACE, St: $STATUS, Remote: $REMOTE, Ip4_ns: $IP4_NAMESERVERS, Conn_id: $CONNECTION_UUID"
+    ;;
+  vpn-down)
+	# allow any DNS (to make it possible to reconnect)
+	ufw allow out from any to any port 53
+	ufw reload
+    ;;
+esac
