@@ -7,6 +7,7 @@ A [dispatcher script](https://developer.gnome.org/NetworkManager/stable/NetworkM
 - **vpn-up**
   - Enable UFW and set it to allow only the traffic passing through the VPN interface
   - Also allow VPN remote's IPs from any interface, so that VPN can be reestablished easily
+  - And always allow hardcoded LAN(192.168.1.0/24) traffic
 - **vpn-down**
   - Additionally enable all DNS traffic until VPN is back up, so that VPN can be reestablished easily in case the remote is a domain
   - *There may be DNS leaks on this stage, but everything else is still firewalled*
