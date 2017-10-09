@@ -10,9 +10,11 @@ case $STATUS in
 	# all traffic disabled by default
 	ufw default deny outgoing 
 	ufw default deny incoming
-	# allow outgoing through VPN
+	# allow local
+	ufw allow out from 192.168.1.0/24 to 192.168.1.0/24
+	ufw allow in from 192.168.1.0/24 to 192.168.1.0/24
+	# allow outgoing/incoming through VPN
 	ufw allow out on $INTERFACE from any to any
-	# allow incoming through VPN
 	ufw allow in on $INTERFACE from any to any
 	# allow outgoing through anything to the VPN server (to make it possible to reconnect)
 	REMOTE=$(nmcli --fields active connection show $CONNECTION_UUID | sed 's/:/\t/g' | awk '/remote =/ { print $4 }')
